@@ -34,7 +34,7 @@ Run
 pip install django-replace-migrations
 ```
 
-and add `django_migration_linter` to your list of installed apps.
+and add `django_replace_migrations` to your list of installed apps.
 
 
 ## Simple Workflow
@@ -66,10 +66,10 @@ The workflow for this would be:
 
 * `git checkout 2.0`
 * create a new branch `git checkout -b 2-0-delete-migrations`
-* delete all existing migrations in your apps
+* [delete all existing migrations in your apps](https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html)
 * commit and note the commit hash
 * `git checkout 2.0`
-* create a new branch `git checkout 2-0-replace-migrations`
+* create a new branch `git checkout -b 2-0-replace-migrations`
 * run `./manage.py makemigrations --replace-all --name replace_2_0 [app1, app2, ...]`
 * commit and note the commit hash
 * `git checkout [your main branch]`
