@@ -15,7 +15,7 @@ One possible solution is to:
 * Run `./manage.py makemigrations`, so that it creates new initial migrations
 * Run `./manage.py migrate --fake [new migrations]` or `./manage.py migrate --fake-initail` on all servers.
 
-This workflow might work fine, if you have only few (production) servers - however, it becomes hard, when you have many environments with different versions of your application.\
+This workflow might work fine, if you have only few (production) servers - however, it becomes hard, when you have many environments with different versions of your application.
 
 With django-replace-migrations also creates new initial migrations, but also, additionally, adds the already existing migrations to the `replace` list of the new migration
 (That list is used by `squashmigrations` as well). By doing that, faking migrations is not needed anymore.
@@ -44,7 +44,7 @@ If your apps are not depending on each other, you can use django-replace-migrati
 ```
 ./manage.py makemigratons --replace-all --name replace [app1, app2, ...]
 ```
-Note, that you will need to list all of your apps explicitly - otherwise django will also try to replace migrations from dependencies.
+Note, that you will need to [list all of your apps](https://stackoverflow.com/questions/4111244/get-a-list-of-all-installed-applications-in-django-and-their-attributes) explicitly - otherwise django will also try to replace migrations from dependencies.
 While `--name` could be omitted, it is highly recommended to use it so that you can easily recognize the new migrations.
 
 If for any of your apps there are not one but two or more migrations created, your apps are depending on each other (see below).
@@ -70,9 +70,9 @@ The workflow for this would be:
 * commit and note the commit hash
 * `git checkout 2.0`
 * create a new branch `git checkout -b 2-0-replace-migrations`
-* run `./manage.py makemigrations --replace-all --name replace_2_0 [app1, app2, ...]`
+* run `./manage.py makemigrations --replace-all --name replace_2_0 [app1, app2, ...]` ([How to get all apps](https://stackoverflow.com/questions/4111244/get-a-list-of-all-installed-applications-in-django-and-their-attributes))
 * commit and note the commit hash
-* `git checkout [your main branch]`
+* `git checkout [your main/feature branch]`
 * `git cherry-pick [commit-hash from 2-0-delete-migrations]`
 * `git cherry-pick [commit-hash from 2-0-replace-migrations]`
 
