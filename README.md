@@ -75,6 +75,8 @@ The workflow for this would be:
 * `git checkout [your main/feature branch]`
 * `git cherry-pick [commit-hash from 2-0-delete-migrations]`
 * `git cherry-pick [commit-hash from 2-0-replace-migrations]`
+* Edit the first remaining migration of each app. You need to replace every dependency to a deleted migration with the new replacement migration manually.
+* Try to migrate a fresh database.
 
 Now you have all migrations prior to 2.0 removed and replaced with new migrations.
 
