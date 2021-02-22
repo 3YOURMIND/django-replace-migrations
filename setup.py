@@ -18,7 +18,7 @@ from setuptools import setup, find_packages
 PROJECT_DIR = path.abspath(path.dirname(__file__))
 
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 
 from os import path
