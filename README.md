@@ -28,6 +28,8 @@ That might be acceptable depending on your use of those operations and if you ne
 
 ## Installation
 
+Before you install, read the workflow below. You need to have the app installed in your project only on a specific branch temporarily.
+
 Run
 
 ```
@@ -70,7 +72,8 @@ The workflow for this would be:
 * commit and note the commit hash
 * `git checkout 2.0`
 * create a new branch `git checkout -b 2-0-replace-migrations`
-* run `./manage.py makemigrations --replace-all --name replace_2_0 [app1, app2, ...]` ([How to get all apps](https://stackoverflow.com/questions/4111244/get-a-list-of-all-installed-applications-in-django-and-their-attributes))
+* Install `django-replace-migration` here.
+* run `./manage.py makemigrations --replace-all --name replace_2_0 app1, app2, ...` ([How to get all apps](https://stackoverflow.com/questions/4111244/get-a-list-of-all-installed-applications-in-django-and-their-attributes))
 * commit and note the commit hash
 * `git checkout [your main/feature branch]`
 * `git cherry-pick [commit-hash from 2-0-delete-migrations]`
