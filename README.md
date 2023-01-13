@@ -72,7 +72,7 @@ The workflow for this would be:
 * commit and note the commit hash
 * `git checkout 2.0`
 * create a new branch `git checkout -b 2-0-replace-migrations`
-* Install `django-replace-migration` here.
+* Install `django-replace-migrations` here.
 * run `./manage.py makemigrations --replace-all --name replace_2_0 app1, app2, ...` ([How to get all apps](https://stackoverflow.com/questions/4111244/get-a-list-of-all-installed-applications-in-django-and-their-attributes))
 * commit and note the commit hash
 * `git checkout [your main/feature branch]`
