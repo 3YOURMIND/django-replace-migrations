@@ -11,9 +11,9 @@ Especially, it can not handle circular dependencies - they must be resolved [man
 
 One possible solution is to:
 
-* Delete all existing migrations
-* Run `./manage.py makemigrations`, so that it creates new initial migrations
-* Run `./manage.py migrate --fake [new migrations]` or `./manage.py migrate --fake-initail` on all servers.
+- Delete all existing migrations
+- Run `./manage.py makemigrations`, so that it creates new initial migrations
+- Run `./manage.py migrate --fake [new migrations]` or `./manage.py migrate --fake-initail` on all servers.
 
 This workflow might work fine, if you have only few (production) servers - however, it becomes hard, when you have many environments with different versions of your application.
 
@@ -24,7 +24,6 @@ With django-replace-migrations also creates new initial migrations, but also, ad
 
 The new replacing migrations will not consider any `RunPython` or `RunSQL` operations.
 That might be acceptable depending on your use of those operations and if you need those to prepare a fresh database.
-
 
 ## Installation
 
@@ -38,7 +37,6 @@ pip install django-replace-migrations
 
 and add `django_replace_migrations` to your list of installed apps.
 
-
 ## Simple Workflow
 
 If your apps are not depending on each other, you can use django-replace-migrations like this:
@@ -46,6 +44,7 @@ If your apps are not depending on each other, you can use django-replace-migrati
 ```
 ./manage.py makemigratons --replace-all --name replace [app1, app2, ...]
 ```
+
 Note, that you will need to [list all of your apps](https://stackoverflow.com/questions/4111244/get-a-list-of-all-installed-applications-in-django-and-their-attributes) explicitly - otherwise django will also try to replace migrations from dependencies.
 While `--name` could be omitted, it is highly recommended to use it so that you can easily recognize the new migrations.
 
@@ -54,7 +53,6 @@ If for any of your apps there are not one but two or more migrations created, yo
 You can leave your old migrations in the codebase. Old versions will continue to use the old migrations, while fresh installations will use the newly created replace migration instead.
 
 If you remove the old migrations later, you will need to update the dependencies in your other migrations and replace all occurrences of the old migration with the new replace migration. You can easily do that with try-and-error (`migrate` will fail and tell you which dependency is missing)
-
 
 ## Workflow for depending apps
 
@@ -66,34 +64,30 @@ Let’s assume that our current version of the application is 3.0 and we want to
 
 The workflow for this would be:
 
-* `git checkout 2.0`
-* create a new branch `git checkout -b 2-0-delete-migrations`
-* [delete all existing migrations in your apps](https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html)
-* commit and note the commit hash
-* `git checkout 2.0`
-* create a new branch `git checkout -b 2-0-replace-migrations`
-* Install `django-replace-migration` here.
-* run `./manage.py makemigrations --replace-all --name replace_2_0 app1, app2, ...` ([How to get all apps](https://stackoverflow.com/questions/4111244/get-a-list-of-all-installed-applications-in-django-and-their-attributes))
-* commit and note the commit hash
-* `git checkout [your main/feature branch]`
-* `git cherry-pick [commit-hash from 2-0-delete-migrations]`
-* `git cherry-pick [commit-hash from 2-0-replace-migrations]`
-* Edit the first remaining migration of each app. You need to replace every dependency to a deleted migration with the new replacement migration manually.
-* Try to migrate a fresh database.
+- `git checkout 2.0`
+- create a new branch `git checkout -b 2-0-delete-migrations`
+- [delete all existing migrations in your apps](https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html)
+- commit and note the commit hash
+- `git checkout 2.0`
+- create a new branch `git checkout -b 2-0-replace-migrations`
+- Install `django-replace-migration` here.
+- run `./manage.py makemigrations --replace-all --name replace_2_0 app1, app2, ...` ([How to get all apps](https://stackoverflow.com/questions/4111244/get-a-list-of-all-installed-applications-in-django-and-their-attributes))
+- commit and note the commit hash
+- `git checkout [your main/feature branch]`
+- `git cherry-pick [commit-hash from 2-0-delete-migrations]`
+- `git cherry-pick [commit-hash from 2-0-replace-migrations]`
+- Go over every migration in your app which was not replaced, and check the `dependencies` array. You need to make sure that every dependency listed was not replaced in the process, and the array is not out of date. If that's the case, then you need to specify the newest replaced migration instead. For example, in the app `A` there were two replace migrations created `0001_replace`, `0002_replace`. Migration `0026` is referencing migration `00015`, both from the app `A`, but `0015` was replaced. You need to swap `0015` with `0002_replace`.
 
 Now you have all migrations prior to 2.0 removed and replaced with new migrations.
 
-That means that:
+### Consequences
 
-* Server database is prior 2.0 -> Migrations will not work
-* Server database is after 2.0 -> Newly created replacement migrations will not run because all migrations they replace are already applied
-* Server database is fresh -> Newly created replacement migrations will run.
+If your app is below 2.0 and you want to update to something after 2.0, you first need to update to 2.0
+
+- upgrading from 1.0 to 1.5 will be possible
+- upgrading from 2.0 to 3.0 will be possible
+- upgrading from 1.0 to 3.0 will be **not** possible
 
 ## `makemigration.py` compatibility
 
 This package requires deep integration into `makemigrations.py` so that I needed to copy the whole `makemigrations.py` here. Currently the version of `makemigrations.py` is copied from Django 2.1, however it is also tested with Django 3.0 and works there as well. If you encounter problems, please write what version of Django you are using.
-
-
-
-
-
